@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
 import tailwind from "tailwind-rn";
 import { bgAccent, textColor } from "../constants";
