@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, ScrollView } from "react-native";
 import tailwind from "tailwind-rn";
 
-const Deer = () => {
+const BrownDog = () => {
   return (
     <ScrollView style={tailwind("flex flex-1")}>
       <View style={tailwind("mt-4 w-full flex items-center justify-center")}>
@@ -12,4 +12,4 @@ const Deer = () => {
   );
 };
 
-export default Deer;
+export default BrownDog;

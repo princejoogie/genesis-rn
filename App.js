@@ -17,7 +17,7 @@ export default function App() {
             {(props) => <Home {...props} />}
           </Stack.Screen>
 
-          <Stack.Screen name="About">
+          <Stack.Screen name="About" options={{ title: "About Ticks" }}>
             {(props) => <AboutTicks {...props} />}
           </Stack.Screen>
         </Stack.Navigator>
