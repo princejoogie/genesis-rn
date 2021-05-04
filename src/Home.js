@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
 } from "react-native";
 import tailwind from "tailwind-rn";
 import Svg, { Path } from "react-native-svg";
@@ -26,7 +27,9 @@ export default function Home() {
   const [results, setResults] = useState([]);
   const [isDark, setIsDark] = useState(false);
   const [menuShown, setMenuShown] = useState(false);
-  const { model, loading } = useContext(DataContext);
+  const { model, loading, tickDetector } = useContext(DataContext);
+  // const labels = ["daisy", "dandelion", "roses", "sunflowers", "tulips"];
+  const labels = ["brown tick", "deer tick"];
 
   // CAMERA VARIABLES
   const cam = useRef();
@@ -39,6 +42,10 @@ export default function Home() {
   const bgAccent = isDark ? " bg-gray-700 " : " bg-gray-300 ";
   const textColor = isDark ? " text-gray-100 " : " text-gray-800 ";
   const textAccent = isDark ? "text-gray-300" : "text-gray-700";
+
+  const [imageLink, setImageLink] = useState(
+    "https://i.pinimg.com/originals/a5/50/ef/a550efd6fe55c5be6d657e0c89c3f505.jpg"
+  );
 
   useEffect(() => {
     const init = async () => {
@@ -53,7 +60,9 @@ export default function Home() {
       const predict = async () => {
         setStatus(() => "Initializing...");
         setResults([]);
-        const prediction = await getPrediction(photo);
+        // const prediction = await getPrediction(photo);
+
+        const prediction = await newPrediction(photo);
         setResults(prediction);
         setStatus(() => "Finished.");
       };
@@ -64,11 +73,39 @@ export default function Home() {
     }
   }, [photo]);
 
+  const newPrediction = async (photo) => {
+    try {
+      setStatus(() => "Resizing photo...");
+      const { uri } = await resizePhoto(photo.uri, [224, 224]);
+
+      setStatus(() => "Converting to tensor3D...");
+      const imgB64 = await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+      const imgBuffer = tf.util.encodeString(imgB64, "base64").buffer;
+      const raw = new Uint8Array(imgBuffer);
+      const tensor = decodeJpeg(raw).toFloat();
+      const input = tensor.reshape([1, 224, 224, 3]);
+
+      let result = await tickDetector.predict({ input }).data();
+
+      let retVal = [];
+      for (let i = 0; i < result.length; i++) {
+        retVal.push({ className: labels[i], probability: result[i] });
+      }
+      return retVal;
+    } catch (err) {
+      console.error(err);
+    }
+
+    return [];
+  };
+
   const getPrediction = async (photo) => {
     try {
       if (!loading) {
         setStatus(() => "Resizing photo...");
-        const { uri } = await resizePhoto(photo.uri, [244, 244]);
+        const { uri } = await resizePhoto(photo.uri, [224, 224]);
 
         setStatus(() => "Converting to tensor3D...");
         const imgB64 = await FileSystem.readAsStringAsync(uri, {
@@ -143,8 +180,8 @@ export default function Home() {
   };
 
   return (
-    <View style={tailwind(`flex flex-1 ${bgColor}`)}>
-      <StatusBar />
+    <SafeAreaView style={tailwind(`flex flex-1 ${bgColor}`)}>
+      <StatusBar barStyle="dark-content" />
       {/* Menu */}
       <Menu menuShown={menuShown} setMenuShown={setMenuShown} />
       {/* Content */}
@@ -395,7 +432,7 @@ export default function Home() {
               />
               <Text style={tailwind(`${textColor} font-bold text-xs`)}>
                 {" "}
-                Mobilenet:{" "}
+                Classifier:{" "}
               </Text>
               <Text style={tailwind(`${textColor} text-xs`)}>
                 {!loading ? "ready" : "loading..."}
@@ -409,12 +446,12 @@ export default function Home() {
                 `flex w-1/2 text-center border-r border-gray-400 font-bold ${textColor}`
               )}
             >
-              Classname
+              Tick Type
             </Text>
             <Text
               style={tailwind(`flex w-1/2 text-center font-bold ${textColor}`)}
             >
-              Probability
+              Confidence
             </Text>
           </View>
 
@@ -432,7 +469,7 @@ export default function Home() {
           <View style={tailwind("flex h-6")} />
         </ScrollView>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

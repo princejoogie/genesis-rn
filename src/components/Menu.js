@@ -8,6 +8,7 @@ import Animated, {
 import tailwind from "tailwind-rn";
 import { bgAccent, textColor } from "../constants";
 import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Menu({ menuShown, setMenuShown }) {
   const navigation = useNavigation();
@@ -22,7 +23,7 @@ export default function Menu({ menuShown, setMenuShown }) {
   return (
     <Animated.View
       style={[
-        tailwind("absolute inset-x-0 top-12 px-4 flex justify-center z-10"),
+        tailwind("absolute inset-x-0 top-12 z-50 px-4 flex justify-center"),
         { backgroundColor: "rgba(0,0,0,0.3)" },
         style,
       ]}
