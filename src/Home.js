@@ -146,7 +146,7 @@ export default function Home() {
     <View style={tailwind(`flex flex-1 ${bgColor}`)}>
       <StatusBar />
       {/* Menu */}
-      <Menu menuShown={menuShown} />
+      <Menu menuShown={menuShown} setMenuShown={setMenuShown} />
       {/* Content */}
       <View
         style={tailwind(

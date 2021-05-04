@@ -9,7 +9,7 @@ import tailwind from "tailwind-rn";
 import { bgAccent, textColor } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 
-export default function Menu({ menuShown }) {
+export default function Menu({ menuShown, setMenuShown }) {
   const navigation = useNavigation();
   const mt = useSharedValue(menuShown ? 0 : -300);
 
@@ -28,7 +28,10 @@ export default function Menu({ menuShown }) {
       ]}
     >
       <TouchableOpacity
-        onPress={() => navigation.navigate("About")}
+        onPress={() => {
+          navigation.navigate("About");
+          setMenuShown(false);
+        }}
         activeOpacity={0.7}
         style={tailwind(
           `${bgAccent} w-full py-4 mt-2 flex items-center rounded-md`
