@@ -7,8 +7,10 @@ import Animated, {
 } from "react-native-reanimated";
 import tailwind from "tailwind-rn";
 import { bgAccent, textColor } from "../constants";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Menu({ menuShown }) {
+  const navigation = useNavigation();
   const mt = useSharedValue(menuShown ? 0 : -300);
 
   const style = useAnimatedStyle(() => {
@@ -26,6 +28,7 @@ export default function Menu({ menuShown }) {
       ]}
     >
       <TouchableOpacity
+        onPress={() => navigation.navigate("About")}
         activeOpacity={0.7}
         style={tailwind(
           `${bgAccent} w-full py-4 mt-2 flex items-center rounded-md`
