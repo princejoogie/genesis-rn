@@ -6,7 +6,7 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
+  BackHandler,
 } from "react-native";
 import tailwind from "tailwind-rn";
 import Svg, { Path } from "react-native-svg";
@@ -19,15 +19,15 @@ import { Camera } from "expo-camera";
 import { WIDTH } from "./constants";
 import { DataContext } from "./DataContext";
 import Menu from "./components/Menu";
+import SafeAreaView from "react-native-safe-area-view";
 
 export default function Home() {
   // COMPONENT VARIABLES
   const [photo, setPhoto] = useState();
   const [status, setStatus] = useState("Pick an image");
   const [results, setResults] = useState([]);
-  const [isDark, setIsDark] = useState(false);
   const [menuShown, setMenuShown] = useState(false);
-  const { model, loading, tickDetector } = useContext(DataContext);
+  const { loading, tickDetector } = useContext(DataContext);
   // const labels = ["daisy", "dandelion", "roses", "sunflowers", "tulips"];
   const labels = ["brown tick", "deer tick"];
 
@@ -36,16 +36,6 @@ export default function Home() {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flashMode, setFlashMode] = useState("off");
   const [camPermitted, setCamPermitted] = useState(null);
-
-  // DARK MODE VARIABLES
-  const bgColor = isDark ? " bg-gray-800 " : " bg-gray-100 ";
-  const bgAccent = isDark ? " bg-gray-700 " : " bg-gray-300 ";
-  const textColor = isDark ? " text-gray-100 " : " text-gray-800 ";
-  const textAccent = isDark ? "text-gray-300" : "text-gray-700";
-
-  const [imageLink, setImageLink] = useState(
-    "https://i.pinimg.com/originals/a5/50/ef/a550efd6fe55c5be6d657e0c89c3f505.jpg"
-  );
 
   useEffect(() => {
     const init = async () => {
@@ -84,8 +74,12 @@ export default function Home() {
       });
       const imgBuffer = tf.util.encodeString(imgB64, "base64").buffer;
       const raw = new Uint8Array(imgBuffer);
-      const tensor = decodeJpeg(raw).toFloat();
-      const input = tensor.reshape([1, 224, 224, 3]);
+      const imageTensor = decodeJpeg(raw).toFloat();
+      const input = imageTensor
+        .reshape([1, 224, 224, 3])
+        .div(255)
+        .sub([0.485, 0.456, 0.406])
+        .div([0.229, 0.224, 0.225]);
 
       let result = await tickDetector.predict({ input }).data();
 
@@ -101,48 +95,9 @@ export default function Home() {
     return [];
   };
 
-  const getPrediction = async (photo) => {
-    try {
-      if (!loading) {
-        setStatus(() => "Resizing photo...");
-        const { uri } = await resizePhoto(photo.uri, [224, 224]);
-
-        setStatus(() => "Converting to tensor3D...");
-        const imgB64 = await FileSystem.readAsStringAsync(uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-        const imgBuffer = tf.util.encodeString(imgB64, "base64").buffer;
-        const raw = new Uint8Array(imgBuffer);
-        const tensor = decodeJpeg(raw);
-
-        setStatus(() => "Classifying...");
-        const prediction = await model.classify(tensor);
-        return prediction;
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const pickImage = async () => {
     await ImagePicker.requestCameraPermissionsAsync();
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-      base64: true,
-    });
-
-    if (!result.cancelled) {
-      setPhoto(result);
-    }
-  };
-
-  // ImagePicker
-  const takePhoto = async () => {
-    await ImagePicker.requestCameraPermissionsAsync();
-    let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
@@ -180,8 +135,8 @@ export default function Home() {
   };
 
   return (
-    <SafeAreaView style={tailwind(`flex flex-1 ${bgColor}`)}>
-      <StatusBar barStyle="dark-content" />
+    <SafeAreaView style={tailwind("flex flex-1 bg-gray-100")}>
+      <StatusBar barStyle="dark-content" backgroundColor="#f2f2f2" />
       {/* Menu */}
       <Menu menuShown={menuShown} setMenuShown={setMenuShown} />
       {/* Content */}
@@ -200,7 +155,7 @@ export default function Home() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              style={tailwind(`w-8 h-8 ${textColor}`)}
+              style={tailwind(`w-8 h-8 text-gray-800`)}
             >
               <Path
                 strokeLinecap="round"
@@ -220,7 +175,7 @@ export default function Home() {
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              style={tailwind(`w-8 h-8 ${textColor}`)}
+              style={tailwind(`w-8 h-8 text-gray-800`)}
             >
               <Path
                 strokeLinecap="round"
@@ -232,38 +187,27 @@ export default function Home() {
           </TouchableOpacity>
         )}
 
-        <Text style={tailwind(`text-xl ${textColor}`)}>Genesis</Text>
+        <Text style={tailwind(`text-xl text-gray-800`)}>Genesis</Text>
 
-        {!isDark ? (
-          <TouchableOpacity activeOpacity={0.7} onPress={() => setIsDark(true)}>
-            <Svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              style={tailwind(`w-8 h-8 ${textColor}`)}
-            >
-              <Path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-            </Svg>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => setIsDark(false)}
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => BackHandler.exitApp()}
+        >
+          <Svg
+            xmlns="http://www.w3.org/2000/svg"
+            style={tailwind("w-8 h-8 text-gray-800")}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
           >
-            <Svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              style={tailwind(`w-8 h-8 ${textColor}`)}
-            >
-              <Path
-                fillRule="evenodd"
-                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
-                clipRule="evenodd"
-              />
-            </Svg>
-          </TouchableOpacity>
-        )}
+            <Path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+            />
+          </Svg>
+        </TouchableOpacity>
       </View>
 
       <View
@@ -273,13 +217,13 @@ export default function Home() {
         <View style={[tailwind("flex p-2"), { width: WIDTH, height: WIDTH }]}>
           {photo ? (
             <Image
-              style={tailwind(`${bgAccent} flex flex-1 rounded-xl`)}
+              style={tailwind(`bg-gray-300 flex flex-1 rounded-xl`)}
               source={{ uri: photo.uri }}
             />
           ) : (
             <View
               style={tailwind(
-                `${bgAccent} flex flex-1 justify-center overflow-hidden rounded-xl`
+                `bg-gray-300 flex flex-1 justify-center overflow-hidden rounded-xl`
               )}
             >
               {camPermitted ? (
@@ -291,7 +235,7 @@ export default function Home() {
                   ratio="1:1"
                 />
               ) : (
-                <Text style={tailwind(`${textColor} text-center`)}>
+                <Text style={tailwind(`text-gray-800 text-center`)}>
                   Accept Camera Permission to access
                 </Text>
               )}
@@ -416,10 +360,10 @@ export default function Home() {
         <ScrollView style={tailwind("flex h-2/6 px-4 py-2")}>
           <View style={tailwind("flex flex-row items-center justify-between")}>
             <View style={tailwind("flex flex-row")}>
-              <Text style={tailwind(`${textColor} font-bold text-xs`)}>
+              <Text style={tailwind("text-gray-800 font-bold text-xs")}>
                 Status:{" "}
               </Text>
-              <Text style={tailwind(`${textColor} text-xs`)}>{status}</Text>
+              <Text style={tailwind(`text-gray-800 text-xs`)}>{status}</Text>
             </View>
 
             <View style={tailwind("flex flex-row items-center")}>
@@ -430,26 +374,26 @@ export default function Home() {
                   }`
                 )}
               />
-              <Text style={tailwind(`${textColor} font-bold text-xs`)}>
+              <Text style={tailwind("text-gray-800 font-bold text-xs")}>
                 {" "}
                 Classifier:{" "}
               </Text>
-              <Text style={tailwind(`${textColor} text-xs`)}>
+              <Text style={tailwind("text-gray-800 text-xs")}>
                 {!loading ? "ready" : "loading..."}
               </Text>
             </View>
           </View>
 
-          <View style={tailwind(`flex flex-row py-2 rounded`)}>
+          <View style={tailwind("flex flex-row py-2 rounded")}>
             <Text
               style={tailwind(
-                `flex w-1/2 text-center border-r border-gray-400 font-bold ${textColor}`
+                "flex w-1/2 text-center border-r border-gray-400 font-bold text-gray-800"
               )}
             >
               Tick Type
             </Text>
             <Text
-              style={tailwind(`flex w-1/2 text-center font-bold ${textColor}`)}
+              style={tailwind("flex w-1/2 text-center font-bold text-gray-800")}
             >
               Confidence
             </Text>
@@ -460,9 +404,6 @@ export default function Home() {
               key={`result-${idx}`}
               name={className}
               probability={probability}
-              //   color={idx % 2 === 0 ? "bg-red-300" : "bg-green-300"}
-              color={bgAccent}
-              textColor={textAccent}
             />
           ))}
 
@@ -473,21 +414,21 @@ export default function Home() {
   );
 }
 
-function ResultItem({ name, probability, color = "bg-gray-300", textColor }) {
+function ResultItem({ name, probability }) {
   return (
     <View
       style={tailwind(
-        `flex flex-row ${color} py-2 rounded mt-2 items-center justify-center`
+        "flex flex-row bg-gray-300 py-2 rounded mt-2 items-center justify-center"
       )}
     >
       <Text
         style={tailwind(
-          `${textColor} px-2 flex w-1/2 text-center border-r border-gray-400`
+          "text-gray-800 px-2 flex w-1/2 text-center border-r border-gray-400"
         )}
       >
         {name}
       </Text>
-      <Text style={tailwind(`${textColor} px-2 flex w-1/2 text-center`)}>{`${(
+      <Text style={tailwind(`text-gray-800 px-2 flex w-1/2 text-center`)}>{`${(
         probability * 100
       ).toFixed(2)}%`}</Text>
     </View>

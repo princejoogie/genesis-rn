@@ -1,14 +1,13 @@
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { StatusBar, Text, TouchableOpacity } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
 import tailwind from "tailwind-rn";
-import { bgAccent, textColor } from "../constants";
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import SafeAreaView from "react-native-safe-area-view";
 
 export default function Menu({ menuShown, setMenuShown }) {
   const navigation = useNavigation();
@@ -21,41 +20,45 @@ export default function Menu({ menuShown, setMenuShown }) {
   });
 
   return (
-    <Animated.View
-      style={[
-        tailwind("absolute inset-x-0 top-12 z-50 px-4 flex justify-center"),
-        { backgroundColor: "rgba(0,0,0,0.3)" },
-        style,
-      ]}
-    >
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("About");
-          setMenuShown(false);
-        }}
-        activeOpacity={0.7}
-        style={tailwind(
-          `${bgAccent} w-full py-4 mt-2 flex items-center rounded-md`
-        )}
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor="#f2f2f2" />
+
+      <Animated.View
+        style={[
+          tailwind("absolute inset-x-0 top-12 z-50 px-4 flex justify-center"),
+          { backgroundColor: "rgba(0,0,0,0.3)" },
+          style,
+        ]}
       >
-        <Text style={tailwind(`${textColor}`)}>About</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        activeOpacity={0.7}
-        style={tailwind(
-          `${bgAccent} w-full py-4 mt-2 flex items-center rounded-md`
-        )}
-      >
-        <Text style={tailwind(`${textColor}`)}>Check for Updates</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        activeOpacity={0.7}
-        style={tailwind(
-          `${bgAccent} w-full py-4 my-2 flex items-center rounded-md`
-        )}
-      >
-        <Text style={tailwind(`${textColor}`)}>Help</Text>
-      </TouchableOpacity>
-    </Animated.View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("About");
+            setMenuShown(false);
+          }}
+          activeOpacity={0.7}
+          style={tailwind(
+            `bg-gray-300 w-full py-4 mt-2 flex items-center rounded-md`
+          )}
+        >
+          <Text style={tailwind(`text-gray-800`)}>About</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={tailwind(
+            `bg-gray-300 w-full py-4 mt-2 flex items-center rounded-md`
+          )}
+        >
+          <Text style={tailwind(`text-gray-800`)}>Check for Updates</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={tailwind(
+            `bg-gray-300 w-full py-4 my-2 flex items-center rounded-md`
+          )}
+        >
+          <Text style={tailwind(`text-gray-800`)}>Help</Text>
+        </TouchableOpacity>
+      </Animated.View>
+    </>
   );
 }
