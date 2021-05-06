@@ -75,13 +75,13 @@ export default function Home() {
       const imgBuffer = tf.util.encodeString(imgB64, "base64").buffer;
       const raw = new Uint8Array(imgBuffer);
       const imageTensor = decodeJpeg(raw).toFloat();
-      const input = imageTensor
+      const normalized = imageTensor
         .reshape([1, 224, 224, 3])
         .div(255)
         .sub([0.485, 0.456, 0.406])
         .div([0.229, 0.224, 0.225]);
 
-      let result = await tickDetector.predict({ input }).data();
+      let result = await tickDetector.predict({ input: normalized }).data();
 
       let retVal = [];
       for (let i = 0; i < result.length; i++) {
