@@ -6,6 +6,7 @@ const LoneStar = () => {
     <TickPage
       image={require("../../assets/lone_star_tick.png")}
       title="Lone Star Tick Screen"
+      sn="Amblyomma Americanum"
       diseases="Human Monocytotropic Ehrlichiosis (HME), Ehrlichiosis and Panola MountainTularemia, Heartland Virus, Bourbon Virus, Q Fever and tick paralysis, Borrelia Lonestari"
       classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
       location="Eastern U.S. but most prevalent in South

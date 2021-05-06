@@ -6,6 +6,7 @@ const AmericanDog = () => {
     <TickPage
       image={require("../../assets/american_dog_tick.png")}
       title="American Dog Tick Screen"
+      sn="Dermacentor Variabilis"
       diseases="Rocky Mountain Spotted Fever (RMSF) and Tularemia"
       classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
       location="Rocky Mountains

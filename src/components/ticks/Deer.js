@@ -6,6 +6,7 @@ const Deer = () => {
     <TickPage
       image={require("../../assets/deer_tick.png")}
       title="Deer Dog Tick"
+      sn="Ixodes Scapularis"
       diseases="Lyme Disease, Canine Anaplasmosis, Borrelia Miyamotoi, Powassan Virus"
       classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
       location="Forest regions

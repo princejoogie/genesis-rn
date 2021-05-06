@@ -5,6 +5,7 @@ import tailwind from "tailwind-rn";
 const TickPage = ({
   image,
   title,
+  sn,
   diseases,
   classification,
   location,
@@ -16,10 +17,12 @@ const TickPage = ({
         <Image style={tailwind("w-full h-64 rounded-lg")} source={image} />
 
         <View style={tailwind("flex w-full my-4 bg-white rounded p-4")}>
-          <Text style={tailwind("text-center font-bold text-lg")}>{title}</Text>
+          <Text style={tailwind("text-center font-bold text-lg text-black")}>
+            {title}
+          </Text>
 
-          <Text style={tailwind("text-center text-xs italic")}>
-            scientific name
+          <Text style={tailwind("text-center text-xs italic text-gray-500")}>
+            {sn}
           </Text>
 
           <DescriptionItem title="Diseases it may case" content={diseases} />

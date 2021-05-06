@@ -6,6 +6,7 @@ const RockyMountain = () => {
     <TickPage
       image={require("../../assets/rocky_mountain_tick.png")}
       title="Rocky Mountain Tick Screen"
+      sn="Dermacentor Andersoni"
       diseases="Colorado Trick Fever Virus (CTFV), Rocky Mountain Spotted Fever (RMSF), Q fever and tularemia"
       classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
       location="Scrublands

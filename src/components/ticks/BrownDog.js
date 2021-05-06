@@ -6,6 +6,7 @@ const BrownDog = () => {
     <TickPage
       image={require("../../assets/brown_dog_tick.png")}
       title="Brown Dog Tick Screen"
+      sn="Rhipicephalus Sanguineus"
       diseases="Rocky Mountain Spotted Fever (RMSF) and Boutonneuse Fever"
       classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
       location="Domestic dogs

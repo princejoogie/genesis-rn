@@ -6,6 +6,7 @@ const AsianBlue = () => {
     <TickPage
       image={require("../../assets/asian_blue_tick.png")}
       title="Asian Blue Tick Screen"
+      sn="Haemaphysalis longicornis"
       diseases="Severe Fever with Thrombocytopenia Syndrome (SFTS) and Rickettsia Japonica"
       classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
       location="Native areas like Southeast Asia
