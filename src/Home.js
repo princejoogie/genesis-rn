@@ -50,9 +50,7 @@ export default function Home() {
       const predict = async () => {
         setStatus(() => "Initializing...");
         setResults([]);
-        // const prediction = await getPrediction(photo);
-
-        const prediction = await newPrediction(photo);
+        const prediction = await getPrediction(photo);
         setResults(prediction);
         setStatus(() => "Finished.");
       };
@@ -63,7 +61,7 @@ export default function Home() {
     }
   }, [photo]);
 
-  const newPrediction = async (photo) => {
+  const getPrediction = async (photo) => {
     try {
       setStatus(() => "Resizing photo...");
       const { uri } = await resizePhoto(photo.uri, [224, 224]);
