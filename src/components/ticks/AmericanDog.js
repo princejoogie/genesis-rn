@@ -1,18 +1,20 @@
 import React from "react";
-import { View, Text, Image, ScrollView } from "react-native";
-import tailwind from "tailwind-rn";
+import TickPage from "./TickPage";
 
 const AmericanDog = () => {
   return (
-    <ScrollView style={tailwind("flex flex-1")}>
-      <View style={tailwind("w-full flex items-center justify-center")}>
-        <Image
-          style={tailwind("w-full h-64")}
-          source={require("../../assets/american_dog_tick.png")}
-        />
-        <Text>American Dog Tick Screen</Text>
-      </View>
-    </ScrollView>
+    <TickPage
+      image={require("../../assets/american_dog_tick.png")}
+      title="American Dog Tick Screen"
+      diseases="Rocky Mountain Spotted Fever (RMSF) and Tularemia"
+      classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
+      location="Rocky Mountains
+Little or no tree cover
+Tall grassy fields
+Low lying brush 
+Twigs"
+      others="Have a dark brown body. Females have an off-white shield, while adult males look more mottled."
+    />
   );
 };
 

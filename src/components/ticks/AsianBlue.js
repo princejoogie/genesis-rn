@@ -1,18 +1,18 @@
 import React from "react";
-import { View, Text, Image, ScrollView } from "react-native";
-import tailwind from "tailwind-rn";
+import TickPage from "./TickPage";
 
 const AsianBlue = () => {
   return (
-    <ScrollView style={tailwind("flex flex-1")}>
-      <View style={tailwind("w-full flex items-center justify-center")}>
-        <Image
-          style={tailwind("w-full h-64")}
-          source={require("../../assets/asian_blue_tick.png")}
-        />
-        <Text>Asian Blue Tick Screen</Text>
-      </View>
-    </ScrollView>
+    <TickPage
+      image={require("../../assets/asian_blue_tick.png")}
+      title="Asian Blue Tick Screen"
+      diseases="Severe Fever with Thrombocytopenia Syndrome (SFTS) and Rickettsia Japonica"
+      classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
+      location="Native areas like Southeast Asia
+Livestock species
+Cattle"
+      others="Females and males are reddish-yellow in color, but different body sizes."
+    />
   );
 };
 

@@ -1,18 +1,17 @@
 import React from "react";
-import { View, Text, Image, ScrollView } from "react-native";
-import tailwind from "tailwind-rn";
+import TickPage from "./TickPage";
 
 const LoneStar = () => {
   return (
-    <ScrollView style={tailwind("flex flex-1")}>
-      <View style={tailwind("w-full flex items-center justify-center")}>
-        <Image
-          style={tailwind("w-full h-64")}
-          source={require("../../assets/lone_star_tick.png")}
-        />
-        <Text>Lone Star Tick Screen</Text>
-      </View>
-    </ScrollView>
+    <TickPage
+      image={require("../../assets/lone_star_tick.png")}
+      title="Lone Star Tick Screen"
+      diseases="Human Monocytotropic Ehrlichiosis (HME), Ehrlichiosis and Panola MountainTularemia, Heartland Virus, Bourbon Virus, Q Fever and tick paralysis, Borrelia Lonestari"
+      classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
+      location="Eastern U.S. but most prevalent in South
+Early Spring through late Fall"
+      others="Reddish-brown in color. The adult female is distinguished by a white dot or “lone star” on her back."
+    />
   );
 };
 

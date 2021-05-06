@@ -1,18 +1,19 @@
 import React from "react";
-import { View, Text, Image, ScrollView } from "react-native";
-import tailwind from "tailwind-rn";
+import TickPage from "./TickPage";
 
 const RockyMountain = () => {
   return (
-    <ScrollView style={tailwind("flex flex-1")}>
-      <View style={tailwind("w-full flex items-center justify-center")}>
-        <Image
-          style={tailwind("w-full h-64")}
-          source={require("../../assets/rocky_mountain_tick.png")}
-        />
-        <Text>Rocky Mountain Tick Screen</Text>
-      </View>
-    </ScrollView>
+    <TickPage
+      image={require("../../assets/rocky_mountain_tick.png")}
+      title="Rocky Mountain Tick Screen"
+      diseases="Colorado Trick Fever Virus (CTFV), Rocky Mountain Spotted Fever (RMSF), Q fever and tularemia"
+      classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
+      location="Scrublands
+Lightly wooded areas
+Open grasslands
+Along the trails"
+      others="Reddish-brown in color and look very similar to American Dog Ticks. The adult males have a cream-colored shield. These ticks can be active from January through November, but their activity diminishes during the hot and dry mid-summer period."
+    />
   );
 };
 

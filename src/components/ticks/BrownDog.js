@@ -1,18 +1,17 @@
 import React from "react";
-import { View, Text, Image, ScrollView } from "react-native";
-import tailwind from "tailwind-rn";
+import TickPage from "./TickPage";
 
 const BrownDog = () => {
   return (
-    <ScrollView style={tailwind("flex flex-1")}>
-      <View style={tailwind("w-full flex items-center justify-center")}>
-        <Image
-          style={tailwind("w-full h-64")}
-          source={require("../../assets/brown_dog_tick.png")}
-        />
-        <Text>Brown Dog Tick Screen</Text>
-      </View>
-    </ScrollView>
+    <TickPage
+      image={require("../../assets/brown_dog_tick.png")}
+      title="Brown Dog Tick Screen"
+      diseases="Rocky Mountain Spotted Fever (RMSF) and Boutonneuse Fever"
+      classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
+      location="Domestic dogs
+Indoors, outdoors and in kennels"
+      others="Flat, reddish brown, oval bodies, but when engorged may become gray-blue or olive color. Mostly found in warmer climates"
+    />
   );
 };
 

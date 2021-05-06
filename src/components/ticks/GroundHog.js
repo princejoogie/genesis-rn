@@ -1,18 +1,18 @@
 import React from "react";
-import { View, Text, Image, ScrollView } from "react-native";
-import tailwind from "tailwind-rn";
+import TickPage from "./TickPage";
 
 const GroundHog = () => {
   return (
-    <ScrollView style={tailwind("flex flex-1")}>
-      <View style={tailwind("w-full flex items-center justify-center")}>
-        <Image
-          style={tailwind("w-full h-64")}
-          source={require("../../assets/groundhog_tick.png")}
-        />
-        <Text>Ground Hog Tick Screen</Text>
-      </View>
-    </ScrollView>
+    <TickPage
+      image={require("../../assets/groundhog_tick.png")}
+      title="Ground Hog Tick Screen"
+      diseases="Powassan Virus Disease"
+      classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
+      location="Eastern half of United States
+Feed on a variety of warm-blooded animals
+Humans and domestic animals"
+      others="Has a light brown or blond color. Also known as woodchuck tick."
+    />
   );
 };
 
