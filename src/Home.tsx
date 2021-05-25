@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createRef } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   StatusBar,
   View,
@@ -22,6 +22,7 @@ import Menu from "./components/Menu";
 import SafeAreaView from "react-native-safe-area-view";
 import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 import { FlashMode } from "expo-camera/build/Camera.types";
+import { useNavigation } from "@react-navigation/core";
 
 interface PredictionResult {
   className: string;
@@ -29,6 +30,7 @@ interface PredictionResult {
 }
 
 const Home: React.FC = () => {
+  const navigation = useNavigation();
   // COMPONENT VARIABLES
   const [photo, setPhoto] = useState<ImageInfo>();
   const [status, setStatus] = useState("Pick an image");
@@ -38,7 +40,7 @@ const Home: React.FC = () => {
   const labels = ["brown tick", "deer tick"];
 
   // CAMERA VARIABLES>
-  const cam = createRef<Camera>();
+  const cam = useRef<Camera | null>(null);
   const [type] = useState(Camera.Constants.Type.back);
   const [flashMode, setFlashMode] = useState(FlashMode.off);
   const [camPermitted, setCamPermitted] = useState(false);
@@ -49,6 +51,76 @@ const Home: React.FC = () => {
       setCamPermitted(status === "granted");
     })();
   }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => {
+        return !menuShown ? (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => setMenuShown(true)}
+          >
+            <Svg
+              style={tailwind(`w-6 h-6 text-gray-800`)}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <Path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h7"
+              />
+            </Svg>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => setMenuShown(false)}
+          >
+            <Svg
+              style={tailwind(`w-6 h-6 text-gray-800`)}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <Path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </Svg>
+          </TouchableOpacity>
+        );
+      },
+      headerLeftContainerStyle: tailwind("ml-4"),
+      headerRight: () => {
+        return (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => BackHandler.exitApp()}
+          >
+            <Svg
+              style={tailwind("w-6 h-6 text-gray-800")}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <Path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </Svg>
+          </TouchableOpacity>
+        );
+      },
+      headerRightContainerStyle: tailwind("mr-4"),
+    });
+  }, [menuShown]);
 
   useEffect(() => {
     if (photo) {
@@ -141,76 +213,7 @@ const Home: React.FC = () => {
 
   return (
     <SafeAreaView style={tailwind("flex flex-1 bg-gray-100")}>
-      <StatusBar barStyle="dark-content" backgroundColor="#f2f2f2" />
-      {/* Menu */}
       <Menu menuShown={menuShown} setMenuShown={setMenuShown} />
-      {/* Content */}
-      <View
-        style={tailwind(
-          "flex flex-row items-center justify-between px-4 pt-2 z-30"
-        )}
-      >
-        {!menuShown ? (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => setMenuShown(true)}
-          >
-            <Svg
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              style={tailwind(`w-8 h-8 text-gray-800`)}
-            >
-              <Path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </Svg>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => setMenuShown(false)}
-          >
-            <Svg
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              style={tailwind(`w-8 h-8 text-gray-800`)}
-            >
-              <Path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </Svg>
-          </TouchableOpacity>
-        )}
-
-        <Text style={tailwind(`text-xl text-gray-800`)}>Dog's TAMA</Text>
-
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => BackHandler.exitApp()}
-        >
-          <Svg
-            style={tailwind("w-8 h-8 text-gray-800")}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <Path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-            />
-          </Svg>
-        </TouchableOpacity>
-      </View>
 
       <View
         style={tailwind("flex flex-1")}
@@ -230,7 +233,7 @@ const Home: React.FC = () => {
             >
               {camPermitted ? (
                 <Camera
-                  ref={cam}
+                  ref={(ref) => (cam.current = ref)}
                   style={tailwind(`absolute inset-0`)}
                   type={type}
                   flashMode={flashMode}

@@ -1,5 +1,5 @@
-import React from "react";
-import { StatusBar, Text, TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
+import { Text, TouchableOpacity } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -15,7 +15,12 @@ interface MenuProps {
 
 const Menu: React.FC<MenuProps> = ({ menuShown, setMenuShown }) => {
   const navigation = useNavigation();
-  const mt = useSharedValue(menuShown ? 0 : -300);
+  const mt = useSharedValue(-300);
+
+  useEffect(() => {
+    if (menuShown) mt.value = 0;
+    else mt.value = -300;
+  }, [menuShown]);
 
   const style = useAnimatedStyle(() => {
     return {
@@ -24,46 +29,40 @@ const Menu: React.FC<MenuProps> = ({ menuShown, setMenuShown }) => {
   });
 
   return (
-    <>
-      <StatusBar barStyle="dark-content" backgroundColor="#f2f2f2" />
-
-      <Animated.View
-        style={[
-          tailwind("absolute inset-x-0 top-12 z-50 px-4 flex justify-center"),
-          { backgroundColor: "rgba(0,0,0,0.3)" },
-          style,
-        ]}
+    <Animated.View
+      style={[
+        tailwind("absolute inset-x-0 top-0 z-50 px-4 flex justify-center"),
+        { backgroundColor: "rgba(0,0,0,0.3)" },
+        style,
+      ]}
+    >
+      <TouchableOpacity
+        onPress={() => navigation.navigate("About")}
+        activeOpacity={0.7}
+        style={tailwind(
+          `bg-gray-300 w-full py-4 mt-2 flex items-center rounded-md`
+        )}
       >
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("About");
-            setMenuShown(false);
-          }}
-          activeOpacity={0.7}
-          style={tailwind(
-            `bg-gray-300 w-full py-4 mt-2 flex items-center rounded-md`
-          )}
-        >
-          <Text style={tailwind(`text-gray-800`)}>About Tick</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={tailwind(
-            `bg-gray-300 w-full py-4 mt-2 flex items-center rounded-md`
-          )}
-        >
-          <Text style={tailwind(`text-gray-800`)}>How to Remove Tick</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          style={tailwind(
-            `bg-gray-300 w-full py-4 my-2 flex items-center rounded-md`
-          )}
-        >
-          <Text style={tailwind(`text-gray-800`)}>Help</Text>
-        </TouchableOpacity>
-      </Animated.View>
-    </>
+        <Text style={tailwind(`text-gray-800`)}>About Tick</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigation.navigate("HowTo")}
+        activeOpacity={0.7}
+        style={tailwind(
+          `bg-gray-300 w-full py-4 mt-2 flex items-center rounded-md`
+        )}
+      >
+        <Text style={tailwind(`text-gray-800`)}>How to Remove Tick</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={tailwind(
+          `bg-gray-300 w-full py-4 my-2 flex items-center rounded-md`
+        )}
+      >
+        <Text style={tailwind(`text-gray-800`)}>Help</Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
