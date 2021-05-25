@@ -7,6 +7,7 @@ import {
   ImageSourcePropType,
 } from "react-native";
 import tailwind from "tailwind-rn";
+import DescriptionItem from "../DescriptionItem";
 
 interface PageProps {
   image: ImageSourcePropType;
@@ -48,19 +49,6 @@ const TickPage: React.FC<PageProps> = ({
         </View>
       </View>
     </ScrollView>
-  );
-};
-
-interface DescProp {
-  title: string;
-  content: string;
-}
-const DescriptionItem: React.FC<DescProp> = ({ title, content }) => {
-  return (
-    <>
-      <Text style={tailwind("text-xs text-gray-500 mt-4")}>{title}</Text>
-      <Text>{content}</Text>
-    </>
   );
 };
 
