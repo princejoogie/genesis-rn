@@ -21,7 +21,7 @@ import Menu from "./components/Menu";
 import SafeAreaView from "react-native-safe-area-view";
 import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 import { CameraType, FlashMode } from "expo-camera/build/Camera.types";
-import { useNavigation } from "@react-navigation/core";
+import { useIsFocused, useNavigation } from "@react-navigation/core";
 
 interface PredictionResult {
   className: string;
@@ -43,18 +43,13 @@ const Home: React.FC = () => {
   const [type] = useState<CameraType>(CameraType.back);
   const [flashMode, setFlashMode] = useState<FlashMode>(FlashMode.off);
   const [camPermitted, setCamPermitted] = useState(false);
-  const [camVisible, setCamVisible] = useState(false);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    setCamVisible(true);
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
       setCamPermitted(status === "granted");
     })();
-
-    return () => {
-      setCamVisible(false);
-    };
   }, []);
 
   useEffect(() => {
@@ -240,7 +235,7 @@ const Home: React.FC = () => {
                 `bg-gray-300 flex flex-1 justify-center overflow-hidden rounded-xl`
               )}
             >
-              {camPermitted && camVisible ? (
+              {isFocused && camPermitted ? (
                 <Camera
                   ref={(ref) => (cam.current = ref)}
                   style={tailwind(`absolute inset-0`)}
