@@ -46,7 +46,7 @@ const Menu: React.FC<MenuProps> = ({ menuShown, setMenuShown }) => {
           `bg-gray-300 w-full py-4 mt-2 flex items-center rounded-md`
         )}
       >
-        <Text style={tailwind(`text-gray-800`)}>About Tick</Text>
+        <Text style={tailwind(`text-gray-800`)}>About Ticks</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => {
@@ -61,6 +61,10 @@ const Menu: React.FC<MenuProps> = ({ menuShown, setMenuShown }) => {
         <Text style={tailwind(`text-gray-800`)}>How to Remove Tick</Text>
       </TouchableOpacity>
       <TouchableOpacity
+        onPress={() => {
+          setMenuShown(false);
+          navigation.navigate("Help");
+        }}
         activeOpacity={0.7}
         style={tailwind(
           `bg-gray-300 w-full py-4 my-2 flex items-center rounded-md`

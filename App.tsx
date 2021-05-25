@@ -6,8 +6,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Home from "./src/Home";
 import AboutTicks from "./src/pages/AboutWrapper";
-import HowToRemove from "./src/pages/HowTo/HowToRemove";
+import HowToRemove from "./src/pages/HowToRemove";
 import { StatusBar } from "react-native";
+import Help from "./src/pages/Help";
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,11 @@ const App: React.FC = () => {
               name="HowTo"
               options={{ title: "How to Remove" }}
               component={HowToRemove}
+            />
+            <Stack.Screen
+              name="Help"
+              options={{ title: "Help" }}
+              component={Help}
             />
           </Stack.Navigator>
         </NavigationContainer>

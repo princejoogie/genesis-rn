@@ -6,13 +6,15 @@ const HowToRemove = () => {
   return (
     <ScrollView>
       <View style={tailwind("p-4")}>
-        <Text style={tailwind("font-bold uppercase")}>From Skin</Text>
+        <Text style={tailwind("font-bold text-black uppercase")}>
+          From Skin
+        </Text>
         <Text style={tailwind("text-xs mt-2 text-gray-700")}>
           - Take fine-tipped tweezers and grasp the tick as close to the skin’s
           surface as possible.
         </Text>
         <Image
-          source={require("../../assets/howto/h1.png")}
+          source={require("../assets/howto/h1.png")}
           style={[tailwind("w-full my-2"), { resizeMode: "contain" }]}
         />
 
@@ -21,11 +23,11 @@ const HowToRemove = () => {
           pull the tick straight upward in a slow and steady motion.
         </Text>
         <Image
-          source={require("../../assets/howto/h2.png")}
+          source={require("../assets/howto/h2.png")}
           style={[tailwind("w-full my-2"), { resizeMode: "contain" }]}
         />
         <Image
-          source={require("../../assets/howto/h3.png")}
+          source={require("../assets/howto/h3.png")}
           style={[tailwind("w-full"), { resizeMode: "contain" }]}
         />
 
@@ -34,16 +36,18 @@ const HowToRemove = () => {
           with disinfectant.
         </Text>
         <Image
-          source={require("../../assets/howto/h4.png")}
+          source={require("../assets/howto/h4.png")}
           style={[tailwind("w-full my-2"), { resizeMode: "contain" }]}
         />
 
-        <Text style={tailwind("font-bold uppercase mt-2")}>From Dogs</Text>
+        <Text style={tailwind("font-bold text-black uppercase mt-2")}>
+          From Dogs
+        </Text>
         <Text style={tailwind("text-xs mt-2 text-gray-700")}>
           - Spread the dog’s fur until the tick is visible.
         </Text>
         <Image
-          source={require("../../assets/howto/d1.png")}
+          source={require("../assets/howto/d1.png")}
           style={[tailwind("w-full my-2"), { resizeMode: "contain" }]}
         />
 
@@ -52,7 +56,7 @@ const HowToRemove = () => {
           pull the tick straight upward in a slow and steady motion.
         </Text>
         <Image
-          source={require("../../assets/howto/d2.png")}
+          source={require("../assets/howto/d2.png")}
           style={[tailwind("w-full my-2"), { resizeMode: "contain" }]}
         />
 
@@ -64,7 +68,7 @@ const HowToRemove = () => {
           with disinfectant.
         </Text>
         <Image
-          source={require("../../assets/howto/d3.png")}
+          source={require("../assets/howto/d3.png")}
           style={[tailwind("w-full my-2"), { resizeMode: "contain" }]}
         />
 
