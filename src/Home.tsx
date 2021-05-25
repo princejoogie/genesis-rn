@@ -28,6 +28,11 @@ interface PredictionResult {
   probability: any;
 }
 
+interface GetPredReturns {
+  data: PredictionResult[];
+  tickFound: boolean;
+}
+
 const Home: React.FC = () => {
   const navigation = useNavigation();
   // COMPONENT VARIABLES
@@ -35,7 +40,8 @@ const Home: React.FC = () => {
   const [status, setStatus] = useState("Pick an image");
   const [results, setResults] = useState<PredictionResult[]>([]);
   const [menuShown, setMenuShown] = useState(false);
-  const { loading, tickDetector } = useContext(DataContext);
+  const [found, setFound] = useState<boolean | null>(null);
+  const { loading, tickDetector, mobnet } = useContext(DataContext);
   const labels = ["brown tick", "deer tick"];
 
   // CAMERA VARIABLES>
@@ -128,7 +134,8 @@ const Home: React.FC = () => {
         setStatus(() => "Initializing...");
         setResults([]);
         const prediction = await getPrediction(photo);
-        setResults(prediction);
+        setResults(prediction.data);
+        setFound(prediction.tickFound);
         setStatus(() => "Finished.");
       };
 
@@ -138,7 +145,7 @@ const Home: React.FC = () => {
     }
   }, [photo]);
 
-  const getPrediction = async (photo: ImageInfo) => {
+  const getPrediction = async (photo: ImageInfo): Promise<GetPredReturns> => {
     try {
       setStatus(() => "Resizing photo...");
       const { uri } = await resizePhoto(photo.uri, [224, 224]);
@@ -156,20 +163,32 @@ const Home: React.FC = () => {
         .sub([0.485, 0.456, 0.406])
         .div([0.229, 0.224, 0.225]);
 
-      if (tickDetector) {
-        // @ts-ignore
-        let result = await tickDetector.predict({ input: normalized }).data();
+      if (mobnet && tickDetector) {
+        const mobilenetPreds = await mobnet.classify(imageTensor);
+        let _tickFound = false;
+        mobilenetPreds.forEach((res) => {
+          if (res.className.toLocaleUpperCase().includes("TICK"))
+            _tickFound = true;
+        });
+
         let retVal = [];
-        for (let i = 0; i < result.length; i++) {
-          retVal.push({ className: labels[i], probability: result[i] });
+
+        if (_tickFound) {
+          // @ts-ignore
+          let result = await tickDetector.predict({ input: normalized }).data();
+          for (let i = 0; i < result.length; i++) {
+            retVal.push({ className: labels[i], probability: result[i] });
+          }
         }
-        return retVal;
+
+        return { data: retVal, tickFound: _tickFound };
       }
+
+      return { data: [], tickFound: false };
     } catch (err) {
       console.error(err);
+      return { data: [], tickFound: false };
     }
-
-    return [];
   };
 
   const pickImage = async () => {
@@ -304,6 +323,7 @@ const Home: React.FC = () => {
                   if (photo) {
                     setPhoto(undefined);
                     setResults([]);
+                    setFound(null);
                   } else capturePhoto();
                 }}
               >
@@ -390,28 +410,37 @@ const Home: React.FC = () => {
             </View>
           </View>
 
-          <View style={tailwind("flex flex-row py-2 rounded")}>
-            <Text
-              style={tailwind(
-                "flex w-1/2 text-center border-r border-gray-400 font-bold text-gray-800"
-              )}
-            >
-              Tick Type
-            </Text>
-            <Text
-              style={tailwind("flex w-1/2 text-center font-bold text-gray-800")}
-            >
-              Confidence
-            </Text>
-          </View>
+          {found && (
+            <View style={tailwind("flex flex-row py-2 rounded")}>
+              <Text
+                style={tailwind(
+                  "flex w-1/2 text-center border-r border-gray-400 font-bold text-gray-800"
+                )}
+              >
+                Tick Type
+              </Text>
+              <Text
+                style={tailwind(
+                  "flex w-1/2 text-center font-bold text-gray-800"
+                )}
+              >
+                Confidence
+              </Text>
+            </View>
+          )}
 
-          {results.map(({ className, probability }, idx) => (
-            <ResultItem
-              key={`result-${idx}`}
-              name={className}
-              probability={probability}
-            />
-          ))}
+          {found !== null && !found && (
+            <Text style={tailwind("text-center")}>No Tick Found.</Text>
+          )}
+
+          {found &&
+            results.map(({ className, probability }, idx) => (
+              <ResultItem
+                key={`result-${idx}`}
+                name={className}
+                probability={probability}
+              />
+            ))}
 
           <View style={tailwind("flex h-6")} />
         </ScrollView>
