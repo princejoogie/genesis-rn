@@ -40,7 +40,7 @@ export default function Menu({ menuShown, setMenuShown }) {
             `bg-gray-300 w-full py-4 mt-2 flex items-center rounded-md`
           )}
         >
-          <Text style={tailwind(`text-gray-800`)}>About</Text>
+          <Text style={tailwind(`text-gray-800`)}>About Tick</Text>
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.7}
@@ -48,7 +48,7 @@ export default function Menu({ menuShown, setMenuShown }) {
             `bg-gray-300 w-full py-4 mt-2 flex items-center rounded-md`
           )}
         >
-          <Text style={tailwind(`text-gray-800`)}>Check for Updates</Text>
+          <Text style={tailwind(`text-gray-800`)}>How to Remove Tick</Text>
         </TouchableOpacity>
         <TouchableOpacity
           activeOpacity={0.7}

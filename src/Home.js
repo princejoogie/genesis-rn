@@ -185,7 +185,7 @@ export default function Home() {
           </TouchableOpacity>
         )}
 
-        <Text style={tailwind(`text-xl text-gray-800`)}>Genesis</Text>
+        <Text style={tailwind(`text-xl text-gray-800`)}>Dog's TAMA</Text>
 
         <TouchableOpacity
           activeOpacity={0.7}
