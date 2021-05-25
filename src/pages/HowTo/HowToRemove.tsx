@@ -1,7 +1,6 @@
 import React from "react";
 import { Image, ScrollView, Text, View } from "react-native";
 import tailwind from "tailwind-rn";
-import { HEIGHT, WIDTH } from "../../constants";
 
 const HowToRemove = () => {
   return (
