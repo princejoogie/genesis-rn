@@ -1,7 +1,7 @@
 import React from "react";
 import TickPage from "./TickPage";
 
-const GroundHog = () => {
+const GroundHog: React.FC = () => {
   return (
     <TickPage
       image={require("../../assets/groundhog_tick.png")}

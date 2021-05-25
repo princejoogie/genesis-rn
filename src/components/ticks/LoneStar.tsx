@@ -1,7 +1,7 @@
 import React from "react";
 import TickPage from "./TickPage";
 
-const LoneStar = () => {
+const LoneStar: React.FC = () => {
   return (
     <TickPage
       image={require("../../assets/lone_star_tick.png")}

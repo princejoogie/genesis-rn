@@ -2,11 +2,18 @@ import React, { useState, useEffect, createContext } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { bundleResourceIO } from "@tensorflow/tfjs-react-native";
 
-export const DataContext = createContext();
+interface Ret {
+  loading: boolean;
+  tickDetector: tf.GraphModel | null;
+}
+export const DataContext = createContext<Ret>({
+  loading: true,
+  tickDetector: null,
+});
 
-export const DataProvider = ({ children }) => {
+export const DataProvider: React.FC = ({ children }) => {
   const [loading, setLoading] = useState(true);
-  const [tickDetector, setTickDetector] = useState(null);
+  const [tickDetector, setTickDetector] = useState<tf.GraphModel | null>(null);
 
   useEffect(() => {
     const init = async () => {

@@ -1,8 +1,24 @@
 import React from "react";
-import { View, Text, ScrollView, Image } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  ImageSourcePropType,
+} from "react-native";
 import tailwind from "tailwind-rn";
 
-const TickPage = ({
+interface PageProps {
+  image: ImageSourcePropType;
+  title: string;
+  sn: string;
+  diseases: string;
+  classification: string;
+  location: string;
+  others: string;
+}
+
+const TickPage: React.FC<PageProps> = ({
   image,
   title,
   sn,
@@ -35,7 +51,11 @@ const TickPage = ({
   );
 };
 
-const DescriptionItem = ({ title, content }) => {
+interface DescProp {
+  title: string;
+  content: string;
+}
+const DescriptionItem: React.FC<DescProp> = ({ title, content }) => {
   return (
     <>
       <Text style={tailwind("text-xs text-gray-500 mt-4")}>{title}</Text>

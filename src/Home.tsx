@@ -21,6 +21,7 @@ import { DataContext } from "./DataContext";
 import Menu from "./components/Menu";
 import SafeAreaView from "react-native-safe-area-view";
 import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
+import { FlashMode } from "expo-camera/build/Camera.types";
 
 interface PredictionResult {
   className: string;
@@ -39,7 +40,7 @@ const Home: React.FC = () => {
   // CAMERA VARIABLES>
   const cam = createRef<Camera>();
   const [type] = useState(Camera.Constants.Type.back);
-  const [flashMode, setFlashMode] = useState("off");
+  const [flashMode, setFlashMode] = useState(FlashMode.off);
   const [camPermitted, setCamPermitted] = useState(false);
 
   useEffect(() => {
@@ -83,13 +84,15 @@ const Home: React.FC = () => {
         .sub([0.485, 0.456, 0.406])
         .div([0.229, 0.224, 0.225]);
 
-      let result = await tickDetector.predict({ input: normalized }).data();
-
-      let retVal = [];
-      for (let i = 0; i < result.length; i++) {
-        retVal.push({ className: labels[i], probability: result[i] });
+      if (tickDetector) {
+        // @ts-ignore
+        let result = await tickDetector.predict({ input: normalized }).data();
+        let retVal = [];
+        for (let i = 0; i < result.length; i++) {
+          retVal.push({ className: labels[i], probability: result[i] });
+        }
+        return retVal;
       }
-      return retVal;
     } catch (err) {
       console.error(err);
     }
@@ -250,7 +253,9 @@ const Home: React.FC = () => {
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => {
-                  setFlashMode(flashMode === "on" ? "off" : "on");
+                  setFlashMode(
+                    flashMode === FlashMode.on ? FlashMode.off : FlashMode.on
+                  );
                 }}
               >
                 {flashMode === "on" ? (

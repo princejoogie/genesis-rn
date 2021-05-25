@@ -7,9 +7,13 @@ import Animated, {
 } from "react-native-reanimated";
 import tailwind from "tailwind-rn";
 import { useNavigation } from "@react-navigation/native";
-import SafeAreaView from "react-native-safe-area-view";
 
-export default function Menu({ menuShown, setMenuShown }) {
+interface MenuProps {
+  menuShown: boolean;
+  setMenuShown: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Menu: React.FC<MenuProps> = ({ menuShown, setMenuShown }) => {
   const navigation = useNavigation();
   const mt = useSharedValue(menuShown ? 0 : -300);
 
@@ -61,4 +65,6 @@ export default function Menu({ menuShown, setMenuShown }) {
       </Animated.View>
     </>
   );
-}
+};
+
+export default Menu;

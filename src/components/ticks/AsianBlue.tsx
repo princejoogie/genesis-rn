@@ -1,7 +1,7 @@
 import React from "react";
 import TickPage from "./TickPage";
 
-const AsianBlue = () => {
+const AsianBlue: React.FC = () => {
   return (
     <TickPage
       image={require("../../assets/asian_blue_tick.png")}

@@ -1,7 +1,7 @@
 import React from "react";
 import TickPage from "./TickPage";
 
-const RockyMountain = () => {
+const RockyMountain: React.FC = () => {
   return (
     <TickPage
       image={require("../../assets/rocky_mountain_tick.png")}
