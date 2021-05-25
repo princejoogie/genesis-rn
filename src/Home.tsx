@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useContext, createRef } from "react";
 import {
   StatusBar,
   View,
@@ -20,29 +20,33 @@ import { WIDTH } from "./constants";
 import { DataContext } from "./DataContext";
 import Menu from "./components/Menu";
 import SafeAreaView from "react-native-safe-area-view";
+import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 
-export default function Home() {
+interface PredictionResult {
+  className: string;
+  probability: any;
+}
+
+const Home: React.FC = () => {
   // COMPONENT VARIABLES
-  const [photo, setPhoto] = useState();
+  const [photo, setPhoto] = useState<ImageInfo>();
   const [status, setStatus] = useState("Pick an image");
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState<PredictionResult[]>([]);
   const [menuShown, setMenuShown] = useState(false);
   const { loading, tickDetector } = useContext(DataContext);
-  // const labels = ["daisy", "dandelion", "roses", "sunflowers", "tulips"];
   const labels = ["brown tick", "deer tick"];
 
-  // CAMERA VARIABLES
-  const cam = useRef();
-  const [type, setType] = useState(Camera.Constants.Type.back);
+  // CAMERA VARIABLES>
+  const cam = createRef<Camera>();
+  const [type] = useState(Camera.Constants.Type.back);
   const [flashMode, setFlashMode] = useState("off");
-  const [camPermitted, setCamPermitted] = useState(null);
+  const [camPermitted, setCamPermitted] = useState(false);
 
   useEffect(() => {
-    const init = async () => {
+    (async () => {
       const { status } = await Camera.requestPermissionsAsync();
       setCamPermitted(status === "granted");
-    };
-    init();
+    })();
   }, []);
 
   useEffect(() => {
@@ -61,7 +65,7 @@ export default function Home() {
     }
   }, [photo]);
 
-  const getPrediction = async (photo) => {
+  const getPrediction = async (photo: ImageInfo) => {
     try {
       setStatus(() => "Resizing photo...");
       const { uri } = await resizePhoto(photo.uri, [224, 224]);
@@ -115,7 +119,7 @@ export default function Home() {
         quality: 1,
         base64: true,
         skipProcessing: true,
-        onPictureSaved: async (res) => {
+        onPictureSaved: async (res: any) => {
           setPhoto(res);
         },
       };
@@ -123,7 +127,7 @@ export default function Home() {
     }
   };
 
-  const resizePhoto = async (uri, size) => {
+  const resizePhoto = async (uri: string, size: [number, number]) => {
     const actions = [{ resize: { width: size[0], height: size[1] } }];
     const saveOptions = {
       base64: true,
@@ -149,7 +153,6 @@ export default function Home() {
             onPress={() => setMenuShown(true)}
           >
             <Svg
-              xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -169,7 +172,6 @@ export default function Home() {
             onPress={() => setMenuShown(false)}
           >
             <Svg
-              xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -192,7 +194,6 @@ export default function Home() {
           onPress={() => BackHandler.exitApp()}
         >
           <Svg
-            xmlns="http://www.w3.org/2000/svg"
             style={tailwind("w-8 h-8 text-gray-800")}
             fill="none"
             viewBox="0 0 24 24"
@@ -226,7 +227,7 @@ export default function Home() {
             >
               {camPermitted ? (
                 <Camera
-                  ref={(ref) => (cam.current = ref)}
+                  ref={cam}
                   style={tailwind(`absolute inset-0`)}
                   type={type}
                   flashMode={flashMode}
@@ -254,7 +255,6 @@ export default function Home() {
               >
                 {flashMode === "on" ? (
                   <Svg
-                    xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                     style={tailwind("h-8 w-8 text-gray-200")}
@@ -267,7 +267,6 @@ export default function Home() {
                   </Svg>
                 ) : (
                   <Svg
-                    xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -291,14 +290,13 @@ export default function Home() {
                 ]}
                 onPress={() => {
                   if (photo) {
-                    setPhoto(null);
+                    setPhoto(undefined);
                     setResults([]);
                   } else capturePhoto();
                 }}
               >
                 {photo ? (
                   <Svg
-                    xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -313,7 +311,6 @@ export default function Home() {
                   </Svg>
                 ) : (
                   <Svg
-                    xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -337,7 +334,6 @@ export default function Home() {
 
               <TouchableOpacity activeOpacity={0.7} onPress={pickImage}>
                 <Svg
-                  xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -410,9 +406,12 @@ export default function Home() {
       </View>
     </SafeAreaView>
   );
-}
+};
 
-function ResultItem({ name, probability }) {
+const ResultItem: React.FC<{ name: string; probability: any }> = ({
+  name,
+  probability,
+}) => {
   return (
     <View
       style={tailwind(
@@ -431,4 +430,6 @@ function ResultItem({ name, probability }) {
       ).toFixed(2)}%`}</Text>
     </View>
   );
-}
+};
+
+export default Home;

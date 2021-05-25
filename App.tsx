@@ -9,22 +9,27 @@ import AboutTicks from "./src/pages/AboutWrapper";
 
 const Stack = createStackNavigator();
 
-export default function App() {
+const App: React.FC = () => {
   return (
     <DataProvider>
       <SafeAreaProvider>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name="Home" options={{ headerShown: false }}>
-              {(props) => <Home {...props} />}
-            </Stack.Screen>
-
-            <Stack.Screen name="About" options={{ title: "About Ticks" }}>
-              {(props) => <AboutTicks {...props} />}
-            </Stack.Screen>
+            <Stack.Screen
+              name="Home"
+              options={{ headerShown: false }}
+              component={Home}
+            />
+            <Stack.Screen
+              name="About"
+              options={{ title: "About Ticks" }}
+              component={AboutTicks}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaProvider>
     </DataProvider>
   );
-}
+};
+
+export default App;
