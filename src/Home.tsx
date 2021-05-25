@@ -42,7 +42,7 @@ const Home: React.FC = () => {
   const [menuShown, setMenuShown] = useState(false);
   const [found, setFound] = useState<boolean | null>(null);
   const { loading, tickDetector, mobnet } = useContext(DataContext);
-  const labels = ["brown tick", "deer tick"];
+  const labels = ["Asian Blue Tick", "Brown Tick", "Deer Tick"];
 
   // CAMERA VARIABLES>
   const cam = useRef<Camera | null>(null);

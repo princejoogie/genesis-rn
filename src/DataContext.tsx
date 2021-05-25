@@ -23,8 +23,8 @@ export const DataProvider: React.FC = ({ children }) => {
     const init = async () => {
       setLoading(true);
       await tf.ready();
-      const m = await require("../assets/model/model.json");
-      const b = await require("../assets/model/group1-shard1of1.bin");
+      const m = await require("../assets/model/new_model/model.json");
+      const b = await require("../assets/model/new_model/group1-shard1of1.bin");
       const d = await tf.loadGraphModel(bundleResourceIO(m, b));
       const _mobnet = await mobilenet.load();
       setTickDetector(d);
