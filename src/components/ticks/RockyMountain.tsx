@@ -5,7 +5,7 @@ const RockyMountain: React.FC = () => {
   return (
     <TickPage
       image={require("../../assets/rocky_mountain_tick.png")}
-      title="Rocky Mountain Tick Screen"
+      title="Rocky Mountain Tick"
       sn="Dermacentor Andersoni"
       diseases="Colorado Trick Fever Virus (CTFV), Rocky Mountain Spotted Fever (RMSF), Q fever and tularemia"
       classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
