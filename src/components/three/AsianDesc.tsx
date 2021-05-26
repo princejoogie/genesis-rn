@@ -29,10 +29,6 @@ const AsianDesc: React.FC = () => {
 Livestock species
 Cattle"
         />
-        <DescriptionItem
-          title="Other Information"
-          content="Females and males are reddish-yellow in color, but different body sizes."
-        />
       </View>
     </View>
   );
