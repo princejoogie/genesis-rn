@@ -28,10 +28,6 @@ const BrownDesc: React.FC = () => {
           content="Domestic dogs
 Indoors, outdoors and in kennels"
         />
-        <DescriptionItem
-          title="Other Information"
-          content="Flat, reddish brown, oval bodies, but when engorged may become gray-blue or olive color. Mostly found in warmer climates"
-        />
       </View>
     </View>
   );

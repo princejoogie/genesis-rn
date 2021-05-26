@@ -5,7 +5,7 @@ const BrownDog: React.FC = () => {
   return (
     <TickPage
       image={require("../../assets/brown_dog_tick.png")}
-      title="Brown Dog Tick Screen"
+      title="Brown Dog Tick"
       sn="Rhipicephalus Sanguineus"
       diseases="Rocky Mountain Spotted Fever (RMSF) and Boutonneuse Fever"
       classification="Ixodidae/Ixodes Pacificus (hard-bodied)"

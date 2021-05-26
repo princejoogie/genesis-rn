@@ -5,7 +5,7 @@ const GroundHog: React.FC = () => {
   return (
     <TickPage
       image={require("../../assets/groundhog_tick.png")}
-      title="Ground Hog Tick Screen"
+      title="Ground Hog Tick"
       sn="Ixodes Cookei"
       diseases="Powassan Virus Disease"
       classification="Ixodidae/Ixodes Pacificus (hard-bodied)"
