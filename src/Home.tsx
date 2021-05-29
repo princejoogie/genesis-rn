@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   BackHandler,
+  Platform,
 } from "react-native";
 import tailwind from "tailwind-rn";
 import Svg, { Path } from "react-native-svg";
@@ -23,6 +24,9 @@ import { ImageInfo } from "expo-image-picker/build/ImagePicker.types";
 import { CameraType, FlashMode } from "expo-camera/build/Camera.types";
 import { useIsFocused, useNavigation } from "@react-navigation/core";
 import { AsianDesc, BrownDesc, DeerDesc } from "./components/three";
+import { db, storage } from "./lib/firebase";
+import { useNetInfo } from "@react-native-community/netinfo";
+import { v1 } from "uuid";
 
 type TickTypes = "Asian Blue Tick" | "Brown Tick" | "Deer Tick";
 
@@ -37,6 +41,7 @@ interface GetPredReturns {
 }
 
 const Home: React.FC = () => {
+  const netStatus = useNetInfo();
   const navigation = useNavigation();
   // COMPONENT VARIABLES
   const [photo, setPhoto] = useState<ImageInfo>();
@@ -148,6 +153,44 @@ const Home: React.FC = () => {
     }
   }, [photo]);
 
+  const toLowerAndUnderscore = (text: string) => {
+    return text.toLocaleLowerCase().replace(" ", "_").trim();
+  };
+
+  const maybeUploadImage = async (image: string, data: PredictionResult) => {
+    const res = await db.collection("ticks").add({
+      classification: toLowerAndUnderscore(data.className),
+      probability: data.probability,
+    });
+
+    const _image = Platform.OS === "ios" ? image.replace("file://", "") : image;
+
+    const blob: any = await new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.onload = function () {
+        resolve(xhr.response);
+      };
+      xhr.onerror = function () {
+        reject(new TypeError("Network request failed"));
+      };
+      xhr.responseType = "blob";
+      xhr.open("GET", _image, true);
+      xhr.send(null);
+    });
+
+    const ref = storage.ref(`ticks/${res.id}.jpg`);
+    const snapshot = ref.put(blob);
+    const snap = await snapshot;
+    const url = await snap.ref.getDownloadURL();
+
+    await db.collection("ticks").doc(res.id).set(
+      {
+        photoURL: url,
+      },
+      { merge: true }
+    );
+  };
+
   const getPrediction = async (photo: ImageInfo): Promise<GetPredReturns> => {
     try {
       setStatus(() => "Resizing photo...");
@@ -175,6 +218,7 @@ const Home: React.FC = () => {
         });
 
         let retVal = [];
+        let sorted: PredictionResult[] = [];
 
         if (_tickFound) {
           // @ts-ignore
@@ -185,13 +229,19 @@ const Home: React.FC = () => {
               probability: result[i],
             });
           }
+
+          sorted = retVal.sort((a, b) => {
+            return b.probability - a.probability;
+          });
+
+          if (netStatus.isConnected) {
+            maybeUploadImage(uri, sorted[0]);
+          }
+
+          return { data: sorted, tickFound: _tickFound };
+        } else {
+          return { data: sorted, tickFound: _tickFound };
         }
-
-        const sorted = retVal.sort((a, b) => {
-          return b.probability - a.probability;
-        });
-
-        return { data: sorted, tickFound: _tickFound };
       }
 
       return { data: [], tickFound: false };
@@ -422,25 +472,6 @@ const Home: React.FC = () => {
               </View>
             </View>
 
-            {/* {found && (
-            <View style={tailwind("flex flex-row py-2 rounded")}>
-              <Text
-                style={tailwind(
-                  "flex w-1/2 text-center border-r border-gray-400 font-bold text-gray-800"
-                )}
-              >
-                Tick Type
-              </Text>
-              <Text
-                style={tailwind(
-                  "flex w-1/2 text-center font-bold text-gray-800"
-                )}
-              >
-                Confidence
-              </Text>
-            </View>
-          )} */}
-
             {found !== null && !found && (
               <Text style={tailwind("text-center")}>No Tick Found.</Text>
             )}
@@ -469,11 +500,6 @@ const Home: React.FC = () => {
                           </>
                         )}
                       </Text>
-                      // <ResultItem
-                      //   key={`result-${idx}`}
-                      //   name={className}
-                      //   probability={probability}
-                      // />
                     ))}
                   </Text>
                 </View>
@@ -495,29 +521,5 @@ const Home: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-// const ResultItem: React.FC<{ name: string; probability: any }> = ({
-//   name,
-//   probability,
-// }) => {
-//   return (
-//     <View
-//       style={tailwind(
-//         "flex flex-row bg-gray-300 py-2 rounded mt-2 items-center justify-center"
-//       )}
-//     >
-//       <Text
-//         style={tailwind(
-//           "text-gray-800 px-2 flex w-1/2 text-center border-r border-gray-400"
-//         )}
-//       >
-//         {name}
-//       </Text>
-//       <Text style={tailwind(`text-gray-800 px-2 flex w-1/2 text-center`)}>{`${(
-//         probability * 100
-//       ).toFixed(2)}%`}</Text>
-//     </View>
-//   );
-// };
 
 export default Home;

@@ -10,6 +10,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/masked-view": "0.1.10",
+    "@react-native-community/netinfo": "6.0.0",
     "@react-navigation/material-top-tabs": "^5.3.15",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.4",
@@ -24,12 +25,14 @@
     "expo-image-manipulator": "~9.1.0",
     "expo-image-picker": "~10.1.4",
     "expo-status-bar": "~1.0.4",
+    "firebase": "8.2.3",
     "jpeg-js": "^0.4.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "~1.10.2",
+    "react-native-get-random-values": "^1.7.0",
     "react-native-reanimated": "~2.1.0",
     "react-native-safe-area-context": "3.2.0",
     "react-native-safe-area-view": "^1.1.1",
@@ -37,12 +40,14 @@
     "react-native-svg": "12.1.0",
     "react-native-tab-view": "^2.16.0",
     "react-native-web": "~0.13.12",
-    "tailwind-rn": "^3.0.1"
+    "tailwind-rn": "^3.0.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
     "@types/react": "~17.0.6",
     "@types/react-native": "~0.64.6",
+    "@types/uuid": "^8.3.0",
     "typescript": "~4.2.4"
   },
   "private": true

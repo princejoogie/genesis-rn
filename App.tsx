@@ -1,4 +1,5 @@
 import "react-native-gesture-handler";
+import "react-native-get-random-values";
 import React from "react";
 import { DataProvider } from "./src/DataContext";
 import { NavigationContainer } from "@react-navigation/native";
