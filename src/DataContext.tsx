@@ -20,19 +20,17 @@ export const DataProvider: React.FC = ({ children }) => {
   const [mobnet, setMobnet] = useState<mobilenet.MobileNet | null>(null);
 
   useEffect(() => {
-    const init = async () => {
+    (async () => {
       setLoading(true);
       await tf.ready();
-      const m = await require("../assets/model/new_model/model.json");
-      const b = await require("../assets/model/new_model/group1-shard1of1.bin");
+      const m = await require("../assets/model/model.json");
+      const b = await require("../assets/model/group-shard.bin");
       const d = await tf.loadGraphModel(bundleResourceIO(m, b));
       const _mobnet = await mobilenet.load();
       setTickDetector(d);
       setMobnet(_mobnet);
       setLoading(false);
-    };
-
-    init();
+    })();
   }, []);
 
   return (

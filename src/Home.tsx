@@ -26,7 +26,6 @@ import { useIsFocused, useNavigation } from "@react-navigation/core";
 import { AsianDesc, BrownDesc, DeerDesc } from "./components/three";
 import { db, storage } from "./lib/firebase";
 import { useNetInfo } from "@react-native-community/netinfo";
-import { v1 } from "uuid";
 
 type TickTypes = "Asian Blue Tick" | "Brown Tick" | "Deer Tick";
 
@@ -158,37 +157,43 @@ const Home: React.FC = () => {
   };
 
   const maybeUploadImage = async (image: string, data: PredictionResult) => {
-    const res = await db.collection("ticks").add({
-      classification: toLowerAndUnderscore(data.className),
-      probability: data.probability,
-    });
+    try {
+      const name = toLowerAndUnderscore(data.className);
+      const res = await db.collection("ticks").add({
+        classification: name,
+        probability: data.probability,
+      });
 
-    const _image = Platform.OS === "ios" ? image.replace("file://", "") : image;
+      const _image =
+        Platform.OS === "ios" ? image.replace("file://", "") : image;
 
-    const blob: any = await new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.onload = function () {
-        resolve(xhr.response);
-      };
-      xhr.onerror = function () {
-        reject(new TypeError("Network request failed"));
-      };
-      xhr.responseType = "blob";
-      xhr.open("GET", _image, true);
-      xhr.send(null);
-    });
+      const blob: any = await new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+          resolve(xhr.response);
+        };
+        xhr.onerror = function () {
+          reject(new TypeError("Network request failed"));
+        };
+        xhr.responseType = "blob";
+        xhr.open("GET", _image, true);
+        xhr.send(null);
+      });
 
-    const ref = storage.ref(`ticks/${res.id}.jpg`);
-    const snapshot = ref.put(blob);
-    const snap = await snapshot;
-    const url = await snap.ref.getDownloadURL();
+      const ref = storage.ref(`ticks/${name}/${res.id}.jpg`);
+      const snapshot = ref.put(blob);
+      const snap = await snapshot;
+      const url = await snap.ref.getDownloadURL();
 
-    await db.collection("ticks").doc(res.id).set(
-      {
-        photoURL: url,
-      },
-      { merge: true }
-    );
+      await db.collection("ticks").doc(res.id).set(
+        {
+          photoURL: url,
+        },
+        { merge: true }
+      );
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const getPrediction = async (photo: ImageInfo): Promise<GetPredReturns> => {
